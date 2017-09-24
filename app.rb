@@ -2,6 +2,10 @@ require 'sinatra'
 require 'json'
 require 'fileutils'
 
+before do
+  content_type :json
+end
+
 post '/payload/:repo' do
   repo = params['repo']
   request.body.rewind
@@ -9,6 +13,8 @@ post '/payload/:repo' do
   verify_signature(payload_body, repo)
   # push = JSON.parse(payload_body)
   update_repo(repo)
+
+  { status: 'ok'}.to_json
 end
 
 def verify_signature(payload_body, repo)
